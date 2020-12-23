@@ -66,27 +66,22 @@ public class DemoApplication implements CommandLineRunner {
     String in = scanner.nextLine();
     scanner.close();
 
-    Set<String[]> sortedSet = new TreeSet<String[]>(new Comparator<String[]>() {
+    Set<String[]> results = new TreeSet<String[]>(new Comparator<String[]>() {
       public int compare(String[] o1, String[] o2) {
         return o1[column_number - 1].compareTo(o2[column_number - 1]);
       }
     });
-    ArrayList<String[]> results = new ArrayList<String[]>();
 
     // Отмечаем начало поиска
     long start = System.currentTimeMillis();
     String[] nextLine = first_line;
-		if (nextLine[column_number - 1].startsWith(in)) {
-			//results.add(nextLine);
-      sortedSet.add(nextLine);
-		}
+		if (nextLine[column_number - 1].startsWith(in))
+      results.add(nextLine);
+		
     // Работаем с первой строкой
-		while ((nextLine = reader.readNext()) != null) {
-			if (nextLine[column_number - 1].startsWith(in)) {
-				//results.add(nextLine);
-        sortedSet.add(nextLine);
-			}
-		}
+		while ((nextLine = reader.readNext()) != null)
+			if (nextLine[column_number - 1].startsWith(in))
+        results.add(nextLine);
 
     // Отмечаем завершение поиска
     long finish = System.currentTimeMillis();
@@ -94,24 +89,12 @@ public class DemoApplication implements CommandLineRunner {
 
     reader.close();
 
-    // Сортировка результатов
-    /*
-    results.sort(new Comparator<String[]>() {
-      @Override
-      public int compare(String[] o1, String[] o2) {
-        return o1[column_number - 1].compareTo(o2[column_number - 1]);
-      }
-    });
 
-     */
 
     // Вывод результатов
-		//for (String[] s : results) {
-		for (String[] s : sortedSet) {
+		for (String[] s : results)
 			System.out.println(Arrays.toString(s));
-		}
-    //System.out.println("Количество найденных строк: " + results.toArray().length);
-    System.out.println("Количество найденных строк: " + sortedSet.size());
+    System.out.println("Количество найденных строк: " + results.size());
     System.out.println("Время, затраченное на поиск: " + elapsed + " мс.");
   }
 
