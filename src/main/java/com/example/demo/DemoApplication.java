@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -64,18 +66,25 @@ public class DemoApplication implements CommandLineRunner {
     String in = scanner.nextLine();
     scanner.close();
 
+    Set<String[]> sortedSet = new TreeSet<String[]>(new Comparator<String[]>() {
+      public int compare(String[] o1, String[] o2) {
+        return o1[column_number - 1].compareTo(o2[column_number - 1]);
+      }
+    });
     ArrayList<String[]> results = new ArrayList<String[]>();
 
     // Отмечаем начало поиска
     long start = System.currentTimeMillis();
     String[] nextLine = first_line;
 		if (nextLine[column_number - 1].startsWith(in)) {
-			results.add(nextLine);
+			//results.add(nextLine);
+      sortedSet.add(nextLine);
 		}
     // Работаем с первой строкой
 		while ((nextLine = reader.readNext()) != null) {
 			if (nextLine[column_number - 1].startsWith(in)) {
-				results.add(nextLine);
+				//results.add(nextLine);
+        sortedSet.add(nextLine);
 			}
 		}
 
@@ -86,6 +95,7 @@ public class DemoApplication implements CommandLineRunner {
     reader.close();
 
     // Сортировка результатов
+    /*
     results.sort(new Comparator<String[]>() {
       @Override
       public int compare(String[] o1, String[] o2) {
@@ -93,11 +103,15 @@ public class DemoApplication implements CommandLineRunner {
       }
     });
 
+     */
+
     // Вывод результатов
-		for (String[] s : results) {
+		//for (String[] s : results) {
+		for (String[] s : sortedSet) {
 			System.out.println(Arrays.toString(s));
 		}
-    System.out.println("Количество найденных строк: " + results.toArray().length);
+    //System.out.println("Количество найденных строк: " + results.toArray().length);
+    System.out.println("Количество найденных строк: " + sortedSet.size());
     System.out.println("Время, затраченное на поиск: " + elapsed + " мс.");
   }
 
