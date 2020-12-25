@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,7 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoApplication implements CommandLineRunner {
 
   // Номер колонки указанный в application.yml
-  //@Value("${column_number}")
+  @Value("${column_number}")
   private int column_number;
 
   // Проверяем, является ли строка целым числом
@@ -35,12 +36,7 @@ public class DemoApplication implements CommandLineRunner {
   }
 
   public static void main(String[] args) {
-    //SpringApplication.run(DemoApplication.class, args);
-
-    SpringApplication app = new SpringApplication(DemoApplication.class);
-    app.setBannerMode(Banner.Mode.OFF);
-    app.setLogStartupInfo(false);
-    app.run(args);
+    SpringApplication.run(DemoApplication.class, args);
   }
 
 
@@ -57,15 +53,6 @@ public class DemoApplication implements CommandLineRunner {
         }
       } else {
         System.out.println(columnWarning());
-        return;
-      }
-    } else {
-      //Считывание параметров из application.yml, почему-то через @Value из jar не работает.
-      try {
-        String config = new String(Files.readAllBytes(Paths.get("application.yml")));
-        column_number = Integer.parseInt(config.split(":")[1].substring(1));
-      } catch (NoSuchFileException e) {
-        System.out.println("Нужен файл application.yml с настройками в каталоге с программой.");
         return;
       }
     }
@@ -127,7 +114,6 @@ public class DemoApplication implements CommandLineRunner {
     } catch (FileNotFoundException e) {
       System.out
           .println("Для работы программы необходим файл airports.csv в каталоге с программой.");
-      return;
     }
   }
 
