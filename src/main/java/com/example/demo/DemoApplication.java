@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -63,7 +65,15 @@ public class DemoApplication implements CommandLineRunner {
       //Считывание параметров из application.yml, почему-то через @Value из jar не работает.
       try {
         String config = new String(Files.readAllBytes(Paths.get("application.yml")));
-        column_number = Integer.parseInt(config.split(":")[1].substring(1));
+
+        String regexp = "column_number: (\\d+)";
+        Pattern pattern = Pattern.compile(regexp);
+        Matcher m = pattern.matcher(config);
+        if (!m.find()) {
+          System.out.println("В файле application.yml неправильно указано значение параметра column_number.");
+          return;
+        }
+        column_number = Integer.parseInt(m.group(1));
       } catch (NoSuchFileException e) {
         System.out.println("Нужен файл application.yml с настройками в каталоге с программой.");
         return;
